@@ -12,6 +12,8 @@ import com.example.kiemtralan3.model.loaiphong
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.example.kiemtralan3.helper.datphong
+import androidx.core.widget.doAfterTextChanged
 class datphongactivity : AppCompatActivity() {
 
     private lateinit var tilHoTen: TextInputLayout
@@ -39,6 +41,9 @@ class datphongactivity : AppCompatActivity() {
         setContentView(R.layout.activity_datphong)
         anhXaView()
         hienThiLoaiPhong()
+        edtSoDem.doAfterTextChanged { capNhatTamTinh() }
+        edtSoKhach.doAfterTextChanged { capNhatTamTinh() }
+
     }
 
     private fun anhXaView() {
@@ -63,5 +68,11 @@ class datphongactivity : AppCompatActivity() {
 
     private fun hienThiLoaiPhong() {
         txtLoaiPhong.text = "${loaiphongdangchon.ten} - Giá: ${loaiphongdangchon.giamotdem}"
+    }
+    private fun capNhatTamTinh() {
+        val soDem = edtSoDem.text?.toString()?.trim()?.toIntOrNull() ?: 0
+        val soKhach = edtSoKhach.text?.toString()?.trim()?.toIntOrNull() ?: 0
+        val tien = datphong.tinhtienphong_23115053122139(loaiphongdangchon, soDem, soKhach)
+        txtTamTinh.text = "Tạm tính: $tien"
     }
 }
