@@ -1,4 +1,4 @@
-package com.example.kiemtralan3
+package com.example.kiemtralan3.model
 
 data class loaiphong (
     val ma: String,
@@ -6,4 +6,3 @@ data class loaiphong (
     val giamotdem: Long,
     val succhua: Int
 )
-
