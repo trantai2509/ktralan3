@@ -2,6 +2,7 @@ package com.example.kiemtralan3.view
 
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,6 +15,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.example.kiemtralan3.helper.datphong
 import androidx.core.widget.doAfterTextChanged
+import com.google.android.material.snackbar.Snackbar
+import com.example.kiemtralan3.helper.kiemtrahelper
 class datphongactivity : AppCompatActivity() {
 
     private lateinit var tilHoTen: TextInputLayout
@@ -43,6 +46,7 @@ class datphongactivity : AppCompatActivity() {
         hienThiLoaiPhong()
         edtSoDem.doAfterTextChanged { capNhatTamTinh() }
         edtSoKhach.doAfterTextChanged { capNhatTamTinh() }
+        btnDatPhong.setOnClickListener { xuLyDatPhong() }
 
     }
 
@@ -74,5 +78,54 @@ class datphongactivity : AppCompatActivity() {
         val soKhach = edtSoKhach.text?.toString()?.trim()?.toIntOrNull() ?: 0
         val tien = datphong.tinhtienphong_23115053122139(loaiphongdangchon, soDem, soKhach)
         txtTamTinh.text = "Tạm tính: $tien"
+    }
+    private fun xuLyDatPhong() {
+        val hoTen = edtHoTen.text?.toString()?.trim() ?: ""
+        val sdt = edtSdt.text?.toString()?.trim() ?: ""
+        val email = edtEmail.text?.toString()?.trim() ?: ""
+        val ngayNhan = edtNgayNhan.text?.toString()?.trim() ?: ""
+        val soDemStr = edtSoDem.text?.toString()?.trim() ?: ""
+        val soKhachStr = edtSoKhach.text?.toString()?.trim() ?: ""
+
+        var hopLe = true
+
+        if (!kiemtrahelper.kiemTraHoTen(hoTen)) {
+            tilHoTen.error = "Họ tên không hợp lệ (ít nhất 2 từ)"
+            hopLe = false
+        } else tilHoTen.error = null
+
+        if (!kiemtrahelper.kiemTraSdt(sdt)) {
+            tilSdt.error = "SĐT phải 10 số, bắt đầu 07 hoặc 08"
+            hopLe = false
+        } else tilSdt.error = null
+
+        if (!kiemtrahelper.kiemTraEmail(email)) {
+            tilEmail.error = "Email phải có đuôi @ute.udn.vn"
+            hopLe = false
+        } else tilEmail.error = null
+
+        if (!kiemtrahelper.kiemTraNgay(ngayNhan)) {
+            tilNgayNhan.error = "Ngày định dạng dd/MM/yyyy (2026-2029)"
+            hopLe = false
+        } else tilNgayNhan.error = null
+
+        val soDem = soDemStr.toIntOrNull()
+        if (soDem == null || soDem !in 1..19) {
+            tilSoDem.error = "Số đêm từ 1 đến 19"
+            hopLe = false
+        } else tilSoDem.error = null
+
+        val soKhach = soKhachStr.toIntOrNull()
+        if (soKhach == null || !datphong.hoplesokhach(loaiphongdangchon, soKhach)) {
+            tilSoKhach.error = "Số khách từ 1 đến ${loaiphongdangchon.succhua + 2}"
+            hopLe = false
+        } else tilSoKhach.error = null
+
+        if (!hopLe) {
+            Snackbar.make(btnDatPhong, "Vui lòng kiểm tra lại thông tin", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        Toast.makeText(this, "Đã ghi nhận đơn đặt phòng của $hoTen", Toast.LENGTH_SHORT).show()
     }
 }

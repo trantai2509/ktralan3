@@ -1,6 +1,6 @@
 package com.example.kiemtralan3.helper
 
-object KiemTraHelper {
+object kiemtrahelper {
 
     fun kiemTraHoTen(hoTen: String): Boolean {
         val regex = Regex("^[\\p{L}]+( [\\p{L}]+)+$")
